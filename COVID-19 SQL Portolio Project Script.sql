@@ -1,14 +1,12 @@
-/* Covid-19 data exploration 
-Skills implemented: Data type conversion, Datetime abstraction, Aggregate funtions, Joins, 
-					CTEs, Temp Tables, Creating Views, Windwo Functions. 
+/* COVID-19 data exploration 
+Skills implemented: Data type conversion, Datetime abstraction, Aggregate functions, Joins, 
+					CTEs, Temp Tables, Creating Views, Window Functions. 
 */
 
 
 -- Query to Select Non-Null Continent Records from CovidDeaths:
--- Selects all columns from the CovidDeaths table where the continent column is not null, 
--- ordering by the third and fourth columns. 
--- This query filters out rows that don't relate to specific continents,.
--- That is, excluding global or regional summaries.
+-- Selects all columns from the CovidDeaths table where the continent column is not null,  ordering by the third and fourth columns. 
+-- This query filters out rows that relate to global or regional summaries.
 SELECT *
 FROM CovidDeaths
 WHERE continent IS NOT NULL
@@ -16,7 +14,7 @@ ORDER BY 3, 4
 
 -- Query to Select Records from CovidVaccinations:
 -- Retrieves all columns from the CovidVaccinations table, ordering the results by the third and fourth columns. 
--- This query aims to organize vaccination data and excludes global or regional summaries..
+-- This query aims to organize vaccination data and excludes global or regional summaries.
 SELECT *
 FROM CovidVaccinations
 WHERE continent IS NOT NULL
@@ -25,7 +23,7 @@ ORDER BY 3, 4
 -- Selecting Specific Columns from CovidDeaths:
 -- Extracts key data columns from the CovidDeaths table, including location, date, cases, deaths, and population,
 -- ordered by location and date. 
--- This query is useful for a focused analysis on the spread and impact of COVID-19.
+-- This query is helpful for a focused analysis of the spread and impact of COVID-19.
 SELECT location, date, total_cases, new_cases, total_deaths, population
 FROM CovidDeaths
 ORDER BY 1, 2
@@ -65,7 +63,7 @@ GROUP BY location, population
 ORDER BY population_infected_percentage DESC
 
 
--- Highest Covid-19 Death Count by Country and Continent:
+-- Highest COVID-19 death Count by Country and Continent:
 -- Finds the maximum total deaths recorded in the CovidDeaths table for each location where the continent is 
 -- specified, indicating the hardest-hit areas. 
 SELECT location, MAX(CAST(total_deaths AS int)) total_death_count
@@ -111,7 +109,7 @@ JOIN CovidVaccinations CV
 WHERE CD.continent IS NOT NULL
 
 
--- The query selects the continent, location, date, population, and new vaccinations for each record.
+-- The query selects each record's continent, location, date, population, and new vaccinations.
 -- It uses a window function to calculate a running total of new vaccinations for each location, 
 -- ordered by location and date. The ISNULL function ensures that null values in new_vaccinations are treated 
 -- as 0, preventing null results in the running total. The CONVERT function is used to ensure that the 
@@ -134,11 +132,11 @@ WHERE CD.continent IS NOT NULL
 
 --                                        CTE:
 -- The CTE, PopvsVac, prepares a dataset that includes the continent, location, date, population, 
--- new vaccinations for each day, and a rolling vaccination count for each location. The rolling count is 
--- calculated using a window function that sums the new vaccinations (converting nulls to 0 for accurate summation) partitioned by location and ordered by date. 
+-- new vaccinations for each day, and a rolling vaccination count for each location. The rolling count is calculated using 
+-- a window function that sums the new vaccinations (converting nulls to 0 for accurate summation) partitioned by location and ordered by date. 
 -- This structure allows tracking the cumulative number of vaccinations over time for each location.
 
--- After preparing the dataset with the CTE, the main query selects all columns from the CTE and calculates
+-- After preparing the dataset with the CTE, the primary query selects all columns from the CTE and calculates
 -- an additional column, Vaccination_Percentage. This column represents the percentage of the population that has
 -- been vaccinated, computed by dividing the rolling vaccination count by the population and multiplying by 100 to convert it to a percentage.
 
@@ -168,7 +166,7 @@ WHERE Location = 'Nigeria' AND New_Vaccinations IS NOT NULL
 
 
 
---										TEMP TABLE:
+--					TEMP TABLE:
 DROP TABLE IF EXISTS #Population_Vaccination_Percentage
 CREATE TABLE #Population_Vaccination_Percentage
 (Continent NVARCHAR(255),
@@ -191,7 +189,7 @@ WHERE CD.continent IS NOT NULL
 
 
 
---										VIEWS:
+--					VIEWS:
 DROP VIEW IF EXISTS Population_Vaccination_Percentage;
 GO
 CREATE VIEW Population_Vaccination_Percentage AS 
